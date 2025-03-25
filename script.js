@@ -1,17 +1,16 @@
-//your JS code here. If required.
 document.addEventListener("DOMContentLoaded", () => {
   const outputTable = document.getElementById("output");
 
-  // Show initial loading row
+  // Display initial loading row (fixing Cypress ID issue)
   outputTable.innerHTML = `
-    <tr id="loadingRow">
+    <tr id="loading">
       <td colspan="2" class="text-center">Loading...</td>
     </tr>
   `;
 
-  // Function to create a promise with random delay between 1 to 3 seconds
+  // Function to create a promise that resolves after a random time (1-3s)
   function createPromise(index) {
-    const delay = (Math.random() * 2 + 1).toFixed(3); // Generates between 1.000 to 3.000
+    const delay = (Math.random() * 2 + 1).toFixed(3); // Generates 1.000 - 3.000 seconds
     return new Promise((resolve) => {
       setTimeout(() => resolve({ name: `Promise ${index}`, time: parseFloat(delay) }), delay * 1000);
     });
@@ -20,17 +19,18 @@ document.addEventListener("DOMContentLoaded", () => {
   // Create 3 promises
   const promises = [createPromise(1), createPromise(2), createPromise(3)];
 
-  // Execute all promises and update table
-  const startTime = performance.now(); // Start time tracking
+  // Start time tracking
+  const startTime = performance.now();
 
+  // Use Promise.all() to wait for all promises to resolve
   Promise.all(promises).then((results) => {
-    const endTime = performance.now(); // End time tracking
-    const totalTime = ((endTime - startTime) / 1000).toFixed(3); // Convert ms to seconds with 3 decimal places
+    const endTime = performance.now();
+    const totalTime = ((endTime - startTime) / 1000).toFixed(3); // Convert ms to seconds
 
-    // Remove the "Loading..." row
-    document.getElementById("loadingRow").remove();
+    // Remove "Loading..." row
+    document.getElementById("loading").remove();
 
-    // Populate table with promise results
+    // Populate table with resolved promise results
     results.forEach(({ name, time }) => {
       const row = `<tr><td>${name}</td><td>${time}</td></tr>`;
       outputTable.innerHTML += row;
